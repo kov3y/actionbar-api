@@ -1,0 +1,11 @@
+[versions]
+adventure = '4.26.1'
+lombok = '1.18.46'
+guava = '33.6.0-jre'
+spigot = '1.8.8-R0.1-SNAPSHOT'
+
+[libraries]
+adventure = { module = 'net.kyori:adventure-api', version.ref = 'adventure' }
+lombok = { module = 'org.projectlombok:lombok', version.ref = 'lombok' }
+guava = { module = 'com.google.guava:guava', version.ref = 'guava' }
+spigot = { module = 'com.hpfxd.pandaspigot:pandaspigot-api', version.ref = 'spigot' }
