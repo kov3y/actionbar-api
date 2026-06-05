@@ -90,6 +90,7 @@ Entries are sorted by their `Key` and rendered as:
 | `registerEntry(Key, Component, Duration)` | Registers a timed entry that expires after `duration` |
 | `registerEntry(ActionbarEntry)` | Registers a pre-built entry |
 | `unregisterEntry(Key)` | Removes an entry by key |
+| `unregisterEntriesIf(Predicate<ActionbarEntry>)` | Removes all entries matching the given predicate |
 | `entry(Key)` | Retrieves an entry by key |
 | `entries()` | Returns all current entries |
 
