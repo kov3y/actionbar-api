@@ -54,6 +54,7 @@ public final class ActionbarEntry implements Keyed {
    */
   public ActionbarEntry(final Key key, final Component valueComponent, final Duration duration) {
     this.key = requireNonNull(key, "Key cannot be null");
+
     this.valueComponent = requireNonNull(valueComponent, "Value component cannot be null");
 
     this.duration = requireNonNull(duration, "Duration cannot be null");
