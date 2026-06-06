@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.kuraiwtf:actionbar-api:0.0.6")
+    compileOnly("com.github.kuraiwtf:actionbar-api:0.0.7")
 }
 ```
 
