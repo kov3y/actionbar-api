@@ -33,11 +33,13 @@ dependencies {
 }
 
 publishing {
-  publications.create<MavenPublication>("maven") {
-    from(components["java"])
+  publications {
+    create<MavenPublication>("maven") {
+      from(components["java"])
 
-    groupId = project.group.toString()
-    artifactId = project.name
-    version = project.version.toString()
+      groupId = project.group.toString()
+      artifactId = project.name
+      version = project.version.toString()
+    }
   }
 }
