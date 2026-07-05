@@ -1,75 +1,81 @@
 package dev.kurai.actionbar;
 
-import dev.kurai.actionbar.style.ActionbarStyle;
 import java.util.UUID;
 import java.util.function.Function;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 
 /**
- * Manages per-player {@link Actionbar} instances and drives the recurring update cycle that sends
- * action-bar packets to online players.
+ * Manages per-player {@link Actionbar} instances and drives the recurring update cycle that renders
+ * and sends action-bar messages to online players.
  *
  * <p>Get an instance via {@link #actionbarService(Plugin, Function)}. The returned service
- * immediately schedules an asynchronous repeating task that refreshes every player's action bar
- * each tick.
+ * immediately schedules a repeating task with a one-tick period that refreshes action bars for
+ * online players with active entries.
  *
  * <p>Example usage:
  *
  * <pre>{@code
- * ActionbarService actionbarService = ActionbarService.actionbarService(plugin, player -> BukkitAudiences.of(plugin).player(player));
- * actionbarService.actionbar(player.getUniqueId()).registerActionbarEntry(Key.key("myplugin", "health"), healthComponent);
+ * ActionbarService actionbarService =
+ *     ActionbarService.actionbarService(
+ *         plugin,
+ *         player -> BukkitAudiences.of(plugin).player(player));
+ *
+ * actionbarService
+ *     .actionbar(player.getUniqueId())
+ *     .registerActionbarEntry(actionbarEntry);
  * }</pre>
  */
 public sealed interface ActionbarService permits ActionbarServiceImpl {
 
   /**
-   * Creates a new {@code ActionbarService} and starts the asynchronous tick loop.
+   * Creates a new {@code ActionbarService} and starts its recurring update task.
    *
-   * @param plugin the owning plugin used to schedule the task
+   * @param plugin the plugin that owns the scheduled task
    * @param audienceProvider a function that maps a {@link Player} to the {@link Audience} that
-   *     receives action-bar packets
-   * @return a running {@code ActionbarService} instance
+   *     receives action-bar messages
+   * @return a new running {@code ActionbarService}; never {@code null}
    */
-  @Contract(value = "_, _ -> new", pure = true)
+  @Contract("_, _ -> new")
   static ActionbarService actionbarService(
       final Plugin plugin, final Function<Player, Audience> audienceProvider) {
-    return actionbarService(plugin, audienceProvider, ActionbarStyle.DEFAULT);
+    return actionbarService(plugin, audienceProvider, JoinConfiguration.commas(true));
   }
 
   /**
-   * Creates a new {@code ActionbarService} with a custom {@link ActionbarStyle} and starts the
-   * asynchronous tick loop.
+   * Creates a new {@code ActionbarService} with the specified {@link JoinConfiguration} and starts
+   * its recurring update task.
    *
-   * @param plugin the owning plugin used to schedule the task
+   * @param plugin the plugin that owns the scheduled task
    * @param audienceProvider a function that maps a {@link Player} to the {@link Audience} that
-   *     receives action-bar packets
-   * @param actionbarStyle the visual actionbarStyle applied when rendering entries
-   * @return a running {@code ActionbarService} instance
+   *     receives action-bar messages
+   * @param joinConfiguration the join configuration used to compose action-bar entries
+   * @return a new running {@code ActionbarService}; never {@code null}
    */
-  @Contract(value = "_, _, _ -> new", pure = true)
+  @Contract("_, _, _ -> new")
   static ActionbarService actionbarService(
       final Plugin plugin,
       final Function<Player, Audience> audienceProvider,
-      final ActionbarStyle actionbarStyle) {
-    return new ActionbarServiceImpl(plugin, audienceProvider, actionbarStyle);
+      final JoinConfiguration joinConfiguration) {
+    return new ActionbarServiceImpl(plugin, audienceProvider, joinConfiguration);
   }
 
   /**
-   * Returns the {@link ActionbarStyle} used when rendering entries for all players.
+   * Returns the {@link JoinConfiguration} used to compose action-bar entries.
    *
-   * @return the active actionbarStyle; never {@code null}
+   * @return the active join configuration; never {@code null}
    */
-  ActionbarStyle actionbarStyle();
+  JoinConfiguration joinConfiguration();
 
   /**
-   * Returns the {@link Actionbar} associated with the holder id, creating one lazily if none exists
-   * yet.
+   * Returns the {@link Actionbar} associated with the specified holder ID, creating one lazily if
+   * none exists.
    *
-   * @param holderId the player's unique ID
-   * @return the player's action bar; never {@code null}
+   * @param holderId the holder's unique ID
+   * @return the associated action bar; never {@code null}
    */
   Actionbar actionbar(final UUID holderId);
 }

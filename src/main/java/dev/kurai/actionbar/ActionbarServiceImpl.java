@@ -3,45 +3,48 @@ package dev.kurai.actionbar;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.Maps;
-import dev.kurai.actionbar.style.ActionbarStyle;
 import dev.kurai.actionbar.task.ActionbarUpdaterTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import lombok.Getter;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Default {@link ActionbarService} implementation that stores per-player {@link Actionbar}
- * instances in a {@link java.util.concurrent.ConcurrentHashMap} and schedules {@link
- * ActionbarUpdaterTask} to run asynchronously every tick (period = 1).
+ * Default {@link ActionbarService} implementation that stores per-holder {@link Actionbar}
+ * instances in a concurrent map and schedules an {@link ActionbarUpdaterTask} asynchronously with a
+ * one-tick period.
  */
+@ApiStatus.Internal
 final class ActionbarServiceImpl implements ActionbarService {
 
-  @Getter private final ActionbarStyle actionbarStyle;
+  /**
+   * Thanks to <a href="https://github.com/SuperCrafting/">Super_Crafting</a> for the suggestion.
+   */
+  @Getter private final JoinConfiguration joinConfiguration;
 
-  /** Stores each online player's actionbar, keyed by their unique ID. */
   private final ConcurrentMap<UUID, Actionbar> actionbars;
 
   /**
-   * Constructs the service and immediately schedules the async update task.
+   * Constructs a service and immediately schedules its asynchronous recurring update task.
    *
    * @param plugin the plugin that owns the scheduled task
-   * @param audienceProvider maps a {@link Player} to the target {@link Audience}
-   * @param actionbarStyle the visual style to use when rendering entries
+   * @param audienceProvider a function that maps each {@link Player} to its target {@link Audience}
+   * @param joinConfiguration the join configuration used to compose action-bar entries
    */
   ActionbarServiceImpl(
       final Plugin plugin,
       final Function<Player, Audience> audienceProvider,
-      final ActionbarStyle actionbarStyle) {
+      final JoinConfiguration joinConfiguration) {
     requireNonNull(plugin, "Plugin cannot be null");
     requireNonNull(audienceProvider, "Audience provider cannot be null");
 
-    this.actionbarStyle = requireNonNull(actionbarStyle, "Actionbar style cannot be null");
-
+    this.joinConfiguration = requireNonNull(joinConfiguration, "Join configuration cannot be null");
     this.actionbars = Maps.newConcurrentMap();
 
     Bukkit.getScheduler()
