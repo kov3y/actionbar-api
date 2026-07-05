@@ -41,22 +41,22 @@ public sealed interface Actionbar permits ActionbarImpl {
    * Registers a persistent entry (no expiry) with the given key and text component.
    *
    * @param key the unique identifier for this entry
-   * @param valueComponent the text component to display
+   * @param component the text component to display
    */
-  default void registerActionbarEntry(final Key key, final Component valueComponent) {
-    this.registerActionbarEntry(new ActionbarEntry(key, valueComponent));
+  default void registerActionbarEntry(final Key key, final Component component) {
+    this.registerActionbarEntry(ActionbarEntry.actionbarEntry(key, component));
   }
 
   /**
    * Registers a time-limited entry that expires after {@code duration} has elapsed.
    *
    * @param key the unique identifier for this entry
-   * @param valueComponent the text component to display
+   * @param component the text component to display
    * @param duration how long the entry should remain visible; must be positive
    */
   default void registerActionbarEntry(
-      final Key key, final Component valueComponent, final Duration duration) {
-    this.registerActionbarEntry(new ActionbarEntry(key, valueComponent, duration));
+      final Key key, final Component component, final Duration duration) {
+    this.registerActionbarEntry(ActionbarEntry.actionbarEntry(key, component, duration));
   }
 
   /**
