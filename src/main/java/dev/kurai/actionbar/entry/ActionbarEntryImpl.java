@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -20,7 +21,7 @@ final class ActionbarEntryImpl implements ActionbarEntry {
   private final Key key;
 
   @Getter(AccessLevel.NONE)
-  private final Component component;
+  private final ComponentLike componentLike;
 
   private final Duration duration;
 
@@ -29,10 +30,10 @@ final class ActionbarEntryImpl implements ActionbarEntry {
   @Getter(AccessLevel.NONE)
   private final @Nullable Instant expirationTime;
 
-  ActionbarEntryImpl(final Key key, final Component component, final Duration duration) {
+  ActionbarEntryImpl(final Key key, final ComponentLike componentLike, final Duration duration) {
     this.key = requireNonNull(key, "Key cannot be null");
 
-    this.component = requireNonNull(component, "Component cannot be null");
+    this.componentLike = requireNonNull(componentLike, "Component cannot be null");
 
     this.duration = requireNonNull(duration, "Duration cannot be null");
     if (this.duration.isNegative()) {
@@ -52,6 +53,6 @@ final class ActionbarEntryImpl implements ActionbarEntry {
   /** {@inheritDoc} */
   @Override
   public Component asComponent() {
-    return this.component;
+    return this.componentLike.asComponent();
   }
 }

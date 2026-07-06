@@ -22,26 +22,26 @@ public sealed interface ActionbarEntry extends Keyed, ComponentLike permits Acti
    * Creates an entry with the specified lifetime.
    *
    * @param key the identifier for this entry
-   * @param component the component to display
+   * @param componentLike the componentLike to display
    * @param duration the lifetime of this entry; use {@link Duration#ZERO} for no expiry
    * @return a new action-bar entry
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static ActionbarEntry actionbarEntry(
-      final Key key, final Component component, final Duration duration) {
-    return new ActionbarEntryImpl(key, component, duration);
+      final Key key, final ComponentLike componentLike, final Duration duration) {
+    return new ActionbarEntryImpl(key, componentLike, duration);
   }
 
   /**
    * Creates a persistent entry that never expires.
    *
    * @param key the identifier for this entry
-   * @param component the component to display
+   * @param componentLike the componentLike to display
    * @return a new persistent action-bar entry
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static ActionbarEntry actionbarEntry(final Key key, final Component component) {
-    return actionbarEntry(key, component, Duration.ZERO);
+  static ActionbarEntry actionbarEntry(final Key key, final ComponentLike componentLike) {
+    return actionbarEntry(key, componentLike, Duration.ZERO);
   }
 
   /**
